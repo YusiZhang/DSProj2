@@ -1,11 +1,8 @@
 package test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -26,7 +23,7 @@ public class ZipCodeServer_Stub extends MyStub implements ZipCodeServer {
 
 		
 		try {
-			socket = new Socket(this.getHost(), this.getPort());
+			socket = new Socket(this.getRor().getIP_adr(), this.getRor().getPort());
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			
@@ -35,6 +32,7 @@ public class ZipCodeServer_Stub extends MyStub implements ZipCodeServer {
 			sendMessage.setType("invoke");
 			sendMessage.setArgs(city);
 			sendMessage.setMethodName("find");
+			sendMessage.setRor(this.getRor());
 			out.writeObject(sendMessage);
 			
 			//get message from yourRMI

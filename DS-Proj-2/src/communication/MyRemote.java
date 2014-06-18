@@ -1,5 +1,7 @@
 package communication;
 
-public interface MyRemote {
-	
+import java.io.Serializable;
+
+public interface MyRemote extends Serializable{
+	//ror implements this interface
 }

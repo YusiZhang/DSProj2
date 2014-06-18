@@ -1,8 +1,10 @@
 package registry;
 
+import communication.MyRemote;
 import communication.MyStub;
 
-public class RemoteObjectRef {
+public class RemoteObjectRef implements MyRemote{
+	//MyRemote is Serializable. And _Stub class wrap it in ror.localise method
 	String IP_adr;
 	int Port;
 	int Obj_Key;
@@ -28,8 +30,8 @@ public class RemoteObjectRef {
 		//
 		 Class c = Class.forName(Remote_Interface_Name + "_Stub"); //i.e. ZipCodeServer_Stub
 		 MyStub stub = (MyStub)c.newInstance();
-		 stub.setHost(IP_adr);
-		 stub.setPort(Port);
+		 RemoteObjectRef ror = new RemoteObjectRef(IP_adr, Port, Obj_Key, Remote_Interface_Name);
+		 stub.setRor(ror);
 		//
 		// For this to work, your stub should have a constructor without
 		// arguments.

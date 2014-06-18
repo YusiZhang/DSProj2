@@ -2,25 +2,29 @@ package communication;
 
 import java.io.Serializable;
 
+import registry.RemoteObjectRef;
+
 public class RMIMessage implements Serializable{
 	String type;
 	String methodName;
 	Object returnValue; //could be remote obj
 	Object args;
 	Exception e;
+	RemoteObjectRef ror;
 	
 	public RMIMessage() {
 		type = "";
 		methodName = "";
 		returnValue = "";
 		args = "";
+		ror = null;
 		e = null;
 	}
 	
 	public String toString(){
 		switch (type) {
 		case "invoke":
-			return "invoke " + methodName + "/t" + "args: " + args.toString();
+			return "invoke class " +ror.getRemote_Interface_Name() +" methodName: " + methodName + "/t" + "args: " + args.toString();
 
 		case "return":
 			return "return " + returnValue.toString();
@@ -62,6 +66,17 @@ public class RMIMessage implements Serializable{
 	public void setE(Exception e) {
 		this.e = e;
 	}
+
+	public RemoteObjectRef getRor() {
+		return ror;
+	}
+
+	public void setRor(RemoteObjectRef ror) {
+		this.ror = ror;
+	}
+	
+	
+	
 	
 	
 	

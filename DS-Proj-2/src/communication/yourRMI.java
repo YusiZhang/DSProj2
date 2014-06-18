@@ -16,7 +16,15 @@
  */
 package communication;
 
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+
+import registry.RemoteObjectRef;
 
 public class yourRMI {
 	static String host;
@@ -52,9 +60,33 @@ public class yourRMI {
 		// then register it into the table.
 		tbl.addObj(host, port, o);
 
+		
+		/*
+		 *ror table  for testing 
+		 *Two hash tables:
+		 *1.|serviceName(interfaceName)|Arraylist<ror>|
+		 *2.|ObjectKey(objectName)|actual remote object|
+		 */
+		//table1
+		Hashtable<String,ArrayList<RemoteObjectRef>> tableROR = new Hashtable<String,ArrayList<RemoteObjectRef>>();
+		//testing ror
+		RemoteObjectRef ror1 = new RemoteObjectRef(host, port, 1,"ZipCodeServer");
+		RemoteObjectRef ror2 = new RemoteObjectRef(host, port, 2,"ZipCodeServer");
+		RemoteObjectRef ror3 = new RemoteObjectRef(host, port, 3,"ZipCodeServer");
+		ArrayList<RemoteObjectRef> list = new ArrayList<RemoteObjectRef>();
+		list.add(ror1);
+		list.add(ror2);
+		list.add(ror3);
+		//interfaceName-rorList pair
+		tableROR.put("ZipCodeServer", list);
+		//table2
+		Hashtable <Integer,Object> tableRO = new Hashtable<Integer, Object>();
+		tableRO.put(1, ror1);
+		tableRO.put(2, ror2);
+		tableRO.put(3, ror3);
 		// create a socket.
 		ServerSocket serverSoc = new ServerSocket(port);
-
+		
 		// Now we go into a loop.
 		// Look at rmiregistry.java for a simple server programming.
 		// The code is far from optimal but in any way you can get basics.
@@ -67,19 +99,41 @@ public class yourRMI {
 		 */
 		while (true) {
 			// (1) receives an invocation request.
+			Socket socket = serverSoc.accept();
+			
 			// (2) creates a socket and input/output streams.
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			// (3) gets the invocation, in martiallled form.
-			// (4) gets the real object reference from tbl.
+			RMIMessage receiveMessage = (RMIMessage)in.readObject();
+			
+			
+			// (4.1) get args, method name, out of message
+			Object arguments = receiveMessage.getArgs();
+			String methodName = receiveMessage.getMethodName();
+			// (4.2) gets the real object reference from tbl.
+			System.out.println(receiveMessage.getRor().getRemote_Interface_Name()+"Impl");
+			Object ro = tableRO.get(receiveMessage.getRor().getObj_Key());
+			
 			// (5) Either:
 			// -- using the interface name, asks the skeleton,
 			// together with the object reference, to unmartial
 			// and invoke the real object.
 			// -- or do unmarshalling directly and involkes that
 			// object directly.
+			Method method = ro.getClass().getMethod(receiveMessage.getMethodName());
+			
 			// (6) receives the return value, which (if not marshalled
 			// you should marshal it here) and send it out to the
 			// the source of the invoker.
+			Object returnValue = method.invoke(ro, receiveMessage.getArgs());
+			// (6.1) send reply message to stub
+			RMIMessage replyMessage = new RMIMessage();
+			replyMessage.setType("return");
+			replyMessage.setReturnValue(returnValue);
+			out.writeObject(replyMessage);
 			// (7) closes the socket.
+			socket.close();
 		}
 	}
 }

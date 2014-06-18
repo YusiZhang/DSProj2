@@ -1,22 +1,16 @@
 package communication;
 
+import registry.RemoteObjectRef;
+
 public class MyStub {
-	public String host;
-	public int port;
-	
-	public String getHost() {
-		return host;
+	RemoteObjectRef ror;
+
+	public RemoteObjectRef getRor() {
+		return ror;
 	}
-	public int getPort() {
-		return port;
+
+	public void setRor(RemoteObjectRef ror) {
+		this.ror = ror;
 	}
-	public void setHost(String host) {
-		this.host = host;
-	}
-	public void setPort(int port) {
-		this.port = port;
-	}
-	
-	
 	
 }
