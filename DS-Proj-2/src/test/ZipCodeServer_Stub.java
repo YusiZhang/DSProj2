@@ -3,6 +3,7 @@ package test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -26,19 +27,37 @@ public class ZipCodeServer_Stub extends MyStub implements ZipCodeServer {
 		
 		try {
 			socket = new Socket(this.getHost(), this.getPort());
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			
-			RMIMessage message = new RMIMessage();
-			message.setType("invoke");
-			message.setArgs(city);
+			//send message to yourRMI
+			RMIMessage sendMessage = new RMIMessage();
+			sendMessage.setType("invoke");
+			sendMessage.setArgs(city);
+			sendMessage.setMethodName("find");
+			out.writeObject(sendMessage);
 			
+			//get message from yourRMI
+			RMIMessage receiveMessage = (RMIMessage)in.readObject();
+			if(receiveMessage.getType().equals("return")){
+				System.out.println("Get return from server " + (String)receiveMessage.getReturnValue());
+				return (String) receiveMessage.getReturnValue();
+			}else if(receiveMessage.getType().equals("exception")){
+				throw receiveMessage.getE();
+			}
 			
+			//clean up
+			out.flush();
 			socket.close();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return null;
