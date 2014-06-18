@@ -1,5 +1,7 @@
 package registry;
 
+import communication.MyStub;
+
 public class RemoteObjectRef {
 	String IP_adr;
 	int Port;
@@ -15,7 +17,7 @@ public class RemoteObjectRef {
 
 	// this method is important, since it is a stub creator.
 	//
-	public Object localise() {
+	public MyStub localise() throws ClassNotFoundException, Exception {
 		// Implement this as you like: essentially you should
 		// create a new stub object and returns it.
 		// Assume the stub class has the name e.g.
@@ -24,8 +26,10 @@ public class RemoteObjectRef {
 		//
 		// Then you can create a new stub as follows:
 		//
-		// Class c = Class.forName(Remote_Interface_Name + "_stub");
-		// Object o = c.newinstance()
+		 Class c = Class.forName(Remote_Interface_Name + "_Stub"); //i.e. ZipCodeServer_Stub
+		 MyStub stub = (MyStub)c.newInstance();
+		 stub.setHost(IP_adr);
+		 stub.setPort(Port);
 		//
 		// For this to work, your stub should have a constructor without
 		// arguments.
@@ -36,6 +40,38 @@ public class RemoteObjectRef {
 		// to
 		// another place.
 		// Here let it return null.
-		return null;
+		return stub;
+	}
+	
+	public String getIP_adr() {
+		return IP_adr;
+	}
+
+	public int getPort() {
+		return Port;
+	}
+
+	public int getObj_Key() {
+		return Obj_Key;
+	}
+
+	public String getRemote_Interface_Name() {
+		return Remote_Interface_Name;
+	}
+
+	public void setIP_adr(String iP_adr) {
+		IP_adr = iP_adr;
+	}
+
+	public void setPort(int port) {
+		Port = port;
+	}
+
+	public void setObj_Key(int obj_Key) {
+		Obj_Key = obj_Key;
+	}
+
+	public void setRemote_Interface_Name(String remote_Interface_Name) {
+		Remote_Interface_Name = remote_Interface_Name;
 	}
 }

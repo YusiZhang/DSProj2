@@ -1,5 +1,10 @@
 package test;
-public interface ZipCodeServer // extends YourRemote or whatever
+
+import communication.MyRemote;
+
+//import java.rmi.Remote;
+
+public interface ZipCodeServer extends MyRemote// extends YourRemote or whatever
 {
     public void initialise(ZipCodeList newlist);
     public String find(String city);

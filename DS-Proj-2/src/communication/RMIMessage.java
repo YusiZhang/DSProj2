@@ -1,10 +1,68 @@
-/*
- * author yusiz
- * date 15 Jun
- * version 1
- */
 package communication;
 
-public class RMIMessage {
+import java.io.Serializable;
 
+public class RMIMessage implements Serializable{
+	String type;
+	String methodName;
+	Object returnValue; //could be remote obj
+	Object args;
+	Exception e;
+	
+	public RMIMessage() {
+		type = "";
+		methodName = "";
+		returnValue = "";
+		args = "";
+		e = null;
+	}
+	
+	public String toString(){
+		switch (type) {
+		case "invoke":
+			return "invoke " + methodName + "/t" + "args: " + args.toString();
+
+		case "return":
+			return "return " + returnValue.toString();
+			
+		case "exception":
+			return "exception " + e.toString();
+		default:
+			return "default";
+		}
+	}
+	
+	public String getMethodName() {
+		return methodName;
+	}
+	public void setMethodName(String methodName) {
+		this.methodName = methodName;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public Object getReturnValue() {
+		return returnValue;
+	}
+	public void setReturnValue(Object returnValue) {
+		this.returnValue = returnValue;
+	}
+	public Object getArgs() {
+		return args;
+	}
+	public void setArgs(Object args) {
+		this.args = args;
+	}
+	public Exception getE() {
+		return e;
+	}
+	public void setE(Exception e) {
+		this.e = e;
+	}
+	
+	
+	
 }

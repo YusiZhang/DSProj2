@@ -24,8 +24,6 @@ public class MySocket{
 		this.dest_Port = port;
 		this.curPort = curPort;
 		try {
-//			System.out.println(InetAddress.getLocalHost());
-//			socket = new Socket(this.dest_Host, this.dest_Port, InetAddress.getLocalHost(),this.curPort);
 			socket = new Socket(this.dest_Host, this.dest_Port);
 			os = new ObjectOutputStream(socket.getOutputStream());
 		} catch (UnknownHostException e) {
