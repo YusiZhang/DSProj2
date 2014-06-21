@@ -64,8 +64,9 @@ public class yourRMI {
 		/*
 		 *ror table  for testing 
 		 *Two hash tables:
-		 *1.|serviceName(interfaceName)|Arraylist<ror>|
-		 *2.|ObjectKey(objectName)|actual remote object|
+		 *0.|*************key*******|**********value*******|
+		 *1.|**serviceName(interfaceName)**|**Arraylist<ror>**|
+		 *2.|**ObjectKey(objectName)**|**actual remote object**|
 		 */
 		//table1
 		Hashtable<String,ArrayList<RemoteObjectRef>> tableROR = new Hashtable<String,ArrayList<RemoteObjectRef>>();
