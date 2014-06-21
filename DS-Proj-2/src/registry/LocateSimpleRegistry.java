@@ -31,13 +31,13 @@ public class LocateSimpleRegistry
 		}
 	    else
 		{
-		    System.out.println("somebody is there but not a  registry!");
+		    System.out.println("somebody is there but not a registry!");
 		    return null;
 		}
 	}
 	catch (Exception e) 
 	    { 
-		System.out.println("nobody is there!"+e);
+		System.out.println("nobody is there! "+e);
 		return null;
 	    }
     }

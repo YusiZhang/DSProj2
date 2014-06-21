@@ -1,17 +1,22 @@
+package registry;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Hashtable;
 
 public class Registry_Server {
 	String host;
 	int port;
 	ServerSocket listener;
 	Socket socket;
-
+	BufferedReader in;
+	ObjectOutputStream os;
 	Hashtable<String, RemoteObjectRef> binds = new Hashtable<String, RemoteObjectRef>();
 
 	public Registry_Server(String host, int port) {
@@ -20,23 +25,23 @@ public class Registry_Server {
 	}
 
 	// handle the lookup() request from the client
-	public void lookup() {
-		Socket soc = new Socket(Host, Port);
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
-		ObjectOutputStream os = new ObjectOutputStream(soc.getOutputStream());
+	public void lookup() throws ClassNotFoundException, UnknownHostException, IOException {
+		socket = new Socket(host, port);
 		try {
+		 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		 os = new ObjectOutputStream(socket.getOutputStream());
+		
 			listener = new ServerSocket(this.port);
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
-		Thread t =  new Thread(){
-			public void run(){
-				super.run();
+//		Thread t =  new Thread(){
+//			@Override
+//			public void run(){
+//				super.run();
 				while(true) {
 					try{
 						socket = listener.accept();
-						in = new ObjectInputStream(socket.getInputStream());
 						String serviceName = in.readLine();
 						
 						RemoteObjectRef res = binds.get(serviceName);
@@ -48,13 +53,11 @@ public class Registry_Server {
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
 					}
 				}
-			}
-		}	
-		t.start();
+//			}
+//		}
+//		t.start();
 	}
 
 	public void rebind(String serviceName, RemoteObjectRef ror) {
