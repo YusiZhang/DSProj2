@@ -40,13 +40,19 @@ public class SimpleRegistry {
 
 		// branch according to the answer.
 		String res = in.readLine();
-		RemoteObjectRef ror;
-		ror = os.readObject();
-		if (ror != null) {
-			System.out.println("found " + ror.Remote_Interface_Name);
-		} else {
-			System.out.println("it is not found!");
+		RemoteObjectRef ror = null;
+		try {
+			ror = (RemoteObjectRef) in.readObject();
+			if (ror != null) {
+				System.out.println("found " + ror.Remote_Interface_Name);
+			} else {
+				System.out.println("it is not found!");
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		/*
 		 * if (res.equals("found")) {
 		 * 

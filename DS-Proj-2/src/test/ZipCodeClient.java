@@ -29,6 +29,7 @@ public class ZipCodeClient {
 		String host = args[0];
 		int port = Integer.parseInt(args[1]);
 		String serviceName = args[2];
+		
 		BufferedReader in = new BufferedReader(new FileReader(args[3]));
 
 		// locate the registry and get ror.

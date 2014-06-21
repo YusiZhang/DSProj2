@@ -20,22 +20,24 @@ public class RMIMessage implements Serializable{
 		ror = null;
 		e = null;
 	}
-	
+	/*
 	public String toString(){
-		switch (type) {
-		case "invoke":
+//		switch (type) {
+		if (type.equals("invoke"))
+//		case "invoke":
 			return "invoke class " +ror.getRemote_Interface_Name() +" methodName: " + methodName + "/t" + "args: " + args.toString();
-
-		case "return":
+		else if (type.equals("return"))
+//		case "return":
 			return "return " + returnValue.toString();
-			
-		case "exception":
+		else if (type.equals("exception"))	
+//		case "exception":
 			return "exception " + e.toString();
-		default:
+//		default:
+		else
 			return "default";
-		}
+		
 	}
-	
+	*/
 	public String getMethodName() {
 		return methodName;
 	}
