@@ -28,9 +28,10 @@ public class RemoteObjectRef implements MyRemote{
 		//
 		// Then you can create a new stub as follows:
 		//
-		 Class c = Class.forName(Remote_Interface_Name + "_Stub"); //i.e. ZipCodeServer_Stub
+		 Class c = Class.forName("test."+Remote_Interface_Name + "_Stub"); //i.e. ZipCodeServer_Stub
 		 MyStub stub = (MyStub)c.newInstance();
 		 RemoteObjectRef ror = new RemoteObjectRef(IP_adr, Port, Obj_Key, Remote_Interface_Name);
+		 System.out.println("ror.localise " + ror.getPort());
 		 stub.setRor(ror);
 		//
 		// For this to work, your stub should have a constructor without

@@ -18,14 +18,15 @@ public class LocateSimpleRegistry
 	    Socket soc = new Socket(host, port);
 	    
 	    // get TCP streams and wrap them. 
-	    BufferedReader in = new BufferedReader(new InputStreamReader (soc.getInputStream()));
+//	    BufferedReader in = new BufferedReader(new InputStreamReader (soc.getInputStream()));
+	    ObjectInputStream in = new ObjectInputStream(soc.getInputStream());
 	    PrintWriter out = new PrintWriter(soc.getOutputStream(), true);
 	    
 	    // ask.
-	    out.println("who are you?");
+	    out.println("locate");
 	    
 	    // gets answer.
-	    if ((in.readLine()).equals("I am a simple registry."))
+	    if (in.readObject().toString().equals("I am a simple registry."))
 		{
 		    return new SimpleRegistry(host, port);
 		}

@@ -6,8 +6,8 @@ import java.io.*;
 
 public class SimpleRegistry {
 	// registry holds its port and host, and connects to it each time.
-	String Host;
-	int Port;
+	public String Host;
+	public int Port;
 
 	// ultra simple constructor.
 	public SimpleRegistry(String IPAdr, int PortNum) {
@@ -16,11 +16,12 @@ public class SimpleRegistry {
 	}
 
 	// returns the ROR (if found) or null (if else)
-	public RemoteObjectRef lookup(String serviceName) throws IOException {
+	public RemoteObjectRef lookup(String serviceName) throws IOException, InterruptedException {
 		// open socket.
 		// it assumes registry is already located by locate registry.
 		// you should usually do try-catch here (and later).
 		Socket soc = new Socket(Host, Port);
+		System.out.println(soc.toString());
 
 		System.out.println("socket made.");
 
@@ -34,8 +35,9 @@ public class SimpleRegistry {
 
 		// it is locate request, with a service name.
 		out.println("lookup");
+		Thread.sleep(500);
 		out.println(serviceName);
-
+		System.out.println("Send interface name " + serviceName);
 		System.out.println("command and service name sent.");
 
 		// branch according to the answer.

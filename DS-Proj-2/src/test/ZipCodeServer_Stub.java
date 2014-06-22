@@ -16,40 +16,39 @@ public class ZipCodeServer_Stub extends MyStub implements ZipCodeServer {
 	@Override
 	public void initialise(ZipCodeList newlist) {
 		l = newlist;
-	}
 
-	@Override
-	public String find(String city) {
+		System.out.println("Stub init is called ");
 
-		
 		try {
 			socket = new Socket(this.getRor().getIP_adr(), this.getRor().getPort());
-			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			System.out.println("Stub : " + "init target port is"+ this.getRor().getPort());
+
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-			
-			//send message to yourRMI
+
+			// send message to yourRMI
 			RMIMessage sendMessage = new RMIMessage();
 			sendMessage.setType("invoke");
-			sendMessage.setArgs(city);
-			sendMessage.setMethodName("find");
+			sendMessage.setArgs(newlist);
+			sendMessage.setMethodName("initialise");
 			sendMessage.setRor(this.getRor());
 			out.writeObject(sendMessage);
-			
-			//get message from yourRMI
-			RMIMessage receiveMessage = (RMIMessage)in.readObject();
-			if(receiveMessage.getType().equals("return")){
-				System.out.println("Get return from server " + (String)receiveMessage.getReturnValue());
-				return (String) receiveMessage.getReturnValue();
-			}else if(receiveMessage.getType().equals("exception")){
+			System.out.println("Stub init send message " + sendMessage.toString());
+
+			// get message from yourRMI
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			RMIMessage receiveMessage = (RMIMessage) in.readObject();
+			if (receiveMessage.getType().equals("return")) {
+				System.out.println("Get return from server "+ (String) receiveMessage.getReturnValue());
+			} else if (receiveMessage.getType().equals("exception")) {
 				throw receiveMessage.getE();
 			}
-			
-			//clean up
+
+			// clean up
 			out.flush();
 			socket.close();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -57,7 +56,59 @@ public class ZipCodeServer_Stub extends MyStub implements ZipCodeServer {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
+
+	}
+
+	@Override
+	public String find(String city) {
+
+		System.out.println("Stub find is called ");
+
+		try {
+			socket = new Socket(this.getRor().getIP_adr(), this.getRor()
+					.getPort());
+			System.out.println("Stub : " + "target port is"
+					+ this.getRor().getPort());
+
+			ObjectOutputStream out = new ObjectOutputStream(
+					socket.getOutputStream());
+
+			// send message to yourRMI
+			RMIMessage sendMessage = new RMIMessage();
+			sendMessage.setType("invoke");
+			sendMessage.setArgs(city);
+			sendMessage.setMethodName("find");
+			sendMessage.setRor(this.getRor());
+			out.writeObject(sendMessage);
+			System.out.println("Stub send message " + sendMessage.toString());
+
+			// get message from yourRMI
+			ObjectInputStream in = new ObjectInputStream(
+					socket.getInputStream());
+			RMIMessage receiveMessage = (RMIMessage) in.readObject();
+			if (receiveMessage.getType().equals("return")) {
+				System.out.println("Get return from server "
+						+ (String) receiveMessage.getReturnValue());
+				return (String) receiveMessage.getReturnValue();
+			} else if (receiveMessage.getType().equals("exception")) {
+				throw receiveMessage.getE();
+			}
+
+			// clean up
+			out.flush();
+			socket.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import registry.RemoteObjectRef;
+import test.ZipCodeServerImpl;
 
 public class yourRMI {
 	static String host;
@@ -34,31 +35,31 @@ public class yourRMI {
 	// reference to the remote object.
 	// As you can see, the exception handling is not done at all.
 	public static void main(String args[]) throws Exception {
-		String InitialClassName = args[0];
-		String registryHost = args[1];
-		int registryPort = Integer.parseInt(args[2]);
-		String serviceName = args[3];
+//		String InitialClassName = args[0];
+//		String registryHost = args[1];
+//		int registryPort = Integer.parseInt(args[2]);
+//		String serviceName = args[3];
 
 		// it should have its own port. assume you hardwire it.
 		host = (InetAddress.getLocalHost()).getHostName();
-		port = 15640;
+		port = 15641;
 
 		// it now have two classes from MainClassName:
 		// (1) the class itself (say ZipCpdeServerImpl) and
 		// (2) its skeleton.
-		Class initialclass = Class.forName(InitialClassName);
-		Class initialskeleton = Class.forName(InitialClassName + "_skel");
+//		Class initialclass = Class.forName(InitialClassName);
+//		Class initialskeleton = Class.forName(InitialClassName + "_skel");
 
 		// you should also create a remote object table here.
 		// it is a table of a ROR and a skeleton.
 		// as a hint, I give such a table's interface as RORtbl.java.
-		RORtbl tbl = new RORtbl();
+//		RORtbl tbl = new RORtbl();
 
 		// after that, you create one remote object of initialclass.
-		Object o = initialclass.newInstance();
+//		Object o = initialclass.newInstance();
 
 		// then register it into the table.
-		tbl.addObj(host, port, o);
+//		tbl.addObj(host, port, o);
 
 		
 		/*
@@ -82,9 +83,10 @@ public class yourRMI {
 		tableROR.put("ZipCodeServer", list);
 		//table2
 		Hashtable <Integer,Object> tableRO = new Hashtable<Integer, Object>();
-		tableRO.put(1, ror1);
-		tableRO.put(2, ror2);
-		tableRO.put(3, ror3);
+		ZipCodeServerImpl impl = new ZipCodeServerImpl();
+		tableRO.put(1, impl);
+		tableRO.put(2, impl);
+		tableRO.put(3, impl);
 		// create a socket.
 		ServerSocket serverSoc = new ServerSocket(port);
 		
@@ -101,17 +103,19 @@ public class yourRMI {
 		while (true) {
 			// (1) receives an invocation request.
 			Socket socket = serverSoc.accept();
-			
+			System.out.println("socket from " + socket.toString() + "is received");
 			// (2) creates a socket and input/output streams.
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			// (3) gets the invocation, in martiallled form.
 			RMIMessage receiveMessage = (RMIMessage)in.readObject();
-			
+			System.out.println("Object is read " + receiveMessage.toString());
 			
 			// (4.1) get args, method name, out of message
 			Object arguments = receiveMessage.getArgs();
 			String methodName = receiveMessage.getMethodName();
+			System.out.println("args are" + arguments.toString());
+			System.out.println("method name is " + methodName);
 			// (4.2) gets the real object reference from tbl.
 			System.out.println(receiveMessage.getRor().getRemote_Interface_Name()+"Impl");
 			Object ro = tableRO.get(receiveMessage.getRor().getObj_Key());
@@ -122,7 +126,7 @@ public class yourRMI {
 			// and invoke the real object.
 			// -- or do unmarshalling directly and involkes that
 			// object directly.
-			Method method = ro.getClass().getMethod(receiveMessage.getMethodName());
+			Method method = ro.getClass().getMethod(receiveMessage.getMethodName(), receiveMessage.getArgs().getClass());
 			
 			// (6) receives the return value, which (if not marshalled
 			// you should marshal it here) and send it out to the

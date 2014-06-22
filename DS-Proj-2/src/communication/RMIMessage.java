@@ -20,7 +20,7 @@ public class RMIMessage implements Serializable{
 		ror = null;
 		e = null;
 	}
-	/*
+	
 	public String toString(){
 //		switch (type) {
 		if (type.equals("invoke"))
@@ -37,7 +37,7 @@ public class RMIMessage implements Serializable{
 			return "default";
 		
 	}
-	*/
+	
 	public String getMethodName() {
 		return methodName;
 	}

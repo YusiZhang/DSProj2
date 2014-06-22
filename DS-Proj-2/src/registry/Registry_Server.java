@@ -1,4 +1,5 @@
 package registry;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,43 +26,72 @@ public class Registry_Server {
 	}
 
 	// handle the lookup() request from the client
-	public void lookup() throws ClassNotFoundException, UnknownHostException, IOException {
-		socket = new Socket(host, port);
+	public void lookup() throws ClassNotFoundException, UnknownHostException,
+			IOException {
+
 		try {
-		 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		 os = new ObjectOutputStream(socket.getOutputStream());
-		
+
 			listener = new ServerSocket(this.port);
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		Thread t =  new Thread(){
-//			@Override
-//			public void run(){
-//				super.run();
-				while(true) {
-					try{
-						socket = listener.accept();
-						String serviceName = in.readLine();
+		// Thread t = new Thread(){
+		// @Override
+		// public void run(){
+		// super.run();
+		while (true) {
+			try {
+				socket = listener.accept();
+				in = new BufferedReader(new InputStreamReader(
+						socket.getInputStream()));
+				os = new ObjectOutputStream(socket.getOutputStream());
+				String serviceName = in.readLine();
+				if (serviceName.equals("lookup")) {
+					System.out.println("ServiceName is " + serviceName);
+					String interfaceName = in.readLine();
+					System.out.println("interfacename " + interfaceName);
+					RemoteObjectRef res = binds.get(interfaceName);
+					if (res != null) {
+						os.writeObject(res);
+						os.flush();
+						os.close();
 						
-						RemoteObjectRef res = binds.get(serviceName);
-						if (res != null) {
-							os.writeObject(res);
-							
-							os.close();
-							socket.close();
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
+						socket.close();
 					}
+				} else if (serviceName.equals("locate")) {
+					System.out.println("ServiceName is " + serviceName);
+					os.writeObject("I am a simple registry.");
+					os.flush();
+					os.close();
+					
+					socket.close();
 				}
-//			}
-//		}
-//		t.start();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// }
+		// }
+		// t.start();
 	}
 
 	public void rebind(String serviceName, RemoteObjectRef ror) {
 		binds.put(serviceName, ror);
 
+	}
+
+	public static void main(String[] args) {
+		Registry_Server server = new Registry_Server("127.0.0.7", 15640);
+		RemoteObjectRef ror = new RemoteObjectRef("127.0.0.1", 15641, 1,
+				"ZipCodeServer");
+		server.rebind("ZipCodeServer", ror);
+
+		try {
+			server.lookup();
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

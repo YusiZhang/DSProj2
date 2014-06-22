@@ -1,6 +1,8 @@
 package test;
 
-public class ZipCodeList
+import java.io.Serializable;
+
+public class ZipCodeList implements Serializable
 {
     public String city;
     public String ZipCode;

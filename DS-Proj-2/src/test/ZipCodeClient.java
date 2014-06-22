@@ -26,15 +26,20 @@ public class ZipCodeClient {
 	// (2) a service name.
 	// (3) a file name as above.
 	public static void main(String[] args) throws ClassNotFoundException, Exception {
-		String host = args[0];
-		int port = Integer.parseInt(args[1]);
-		String serviceName = args[2];
+//		String host = args[0];
+//		int port = Integer.parseInt(args[1]);
+//		String serviceName = args[2];
 		
-		BufferedReader in = new BufferedReader(new FileReader(args[3]));
+//		BufferedReader in = new BufferedReader(new FileReader(args[3]));
+		BufferedReader in = new BufferedReader(new FileReader("data.txt"));
 
 		// locate the registry and get ror.
-		SimpleRegistry sr = LocateSimpleRegistry.getRegistry(host, port);
-		RemoteObjectRef ror = sr.lookup(serviceName);
+		SimpleRegistry sr = LocateSimpleRegistry.getRegistry("127.0.0.1", 15640);
+		System.out.println("sr found ");
+//		SimpleRegistry sr = new SimpleRegistry("127.0.0.1", 15640);
+//		RemoteObjectRef ror = sr.lookup(serviceName);
+		RemoteObjectRef ror = sr.lookup("ZipCodeServer");
+		System.out.println("Received ror " + ror.getIP_adr() + ror.getObj_Key() + ror.getPort() + ror.getRemote_Interface_Name());
 
 		// get (create) the stub out of ror.
 		ZipCodeServer zcs = (ZipCodeServer) ror.localise();
