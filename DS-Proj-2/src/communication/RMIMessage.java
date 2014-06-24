@@ -1,3 +1,7 @@
+/*
+ * author : Yusi
+ * 
+ */
 package communication;
 
 import java.io.Serializable;
@@ -22,17 +26,12 @@ public class RMIMessage implements Serializable{
 	}
 	
 	public String toString(){
-//		switch (type) {
 		if (type.equals("invoke"))
-//		case "invoke":
 			return "invoke class " +ror.getRemote_Interface_Name() +" methodName: " + methodName + "/t" + "args: " + args.toString();
 		else if (type.equals("return"))
-//		case "return":
 			return "return " + returnValue.toString();
 		else if (type.equals("exception"))	
-//		case "exception":
 			return "exception " + e.toString();
-//		default:
 		else
 			return "default";
 		

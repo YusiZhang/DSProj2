@@ -1,3 +1,7 @@
+/*
+ * author : Yue Zhuo , Yusi Zhang
+ * 
+ */
 package registry;
 
 import java.io.BufferedReader;
@@ -35,10 +39,7 @@ public class Registry_Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// Thread t = new Thread(){
-		// @Override
-		// public void run(){
-		// super.run();
+
 		while (true) {
 			try {
 				socket = listener.accept();
@@ -71,9 +72,7 @@ public class Registry_Server {
 				e.printStackTrace();
 			}
 		}
-		// }
-		// }
-		// t.start();
+
 	}
 
 	public void rebind(String serviceName, RemoteObjectRef ror) {
@@ -83,8 +82,7 @@ public class Registry_Server {
 
 	public static void main(String[] args) {
 		Registry_Server server = new Registry_Server("127.0.0.7", 15640);
-		RemoteObjectRef ror = new RemoteObjectRef("127.0.0.1", 15641, 1,
-				"ZipCodeServer");
+		RemoteObjectRef ror = new RemoteObjectRef("127.0.0.1", 15641, 1,"ZipCodeServer");
 		server.rebind("ZipCodeServer", ror);
 
 		try {

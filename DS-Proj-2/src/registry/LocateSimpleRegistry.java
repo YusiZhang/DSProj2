@@ -18,7 +18,6 @@ public class LocateSimpleRegistry
 	    Socket soc = new Socket(host, port);
 	    
 	    // get TCP streams and wrap them. 
-//	    BufferedReader in = new BufferedReader(new InputStreamReader (soc.getInputStream()));
 	    ObjectInputStream in = new ObjectInputStream(soc.getInputStream());
 	    PrintWriter out = new PrintWriter(soc.getOutputStream(), true);
 	    

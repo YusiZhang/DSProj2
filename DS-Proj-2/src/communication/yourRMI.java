@@ -1,3 +1,7 @@
+/*
+ * author : Yusi
+ * based on sample code from 15640
+ */
 /* This does not offer the code of the whole communication module 
  (CM) for RMI: but it gives some hints about how you can make 
  it. I call it simply "yourRMI". 
@@ -35,33 +39,10 @@ public class yourRMI {
 	// reference to the remote object.
 	// As you can see, the exception handling is not done at all.
 	public static void main(String args[]) throws Exception {
-//		String InitialClassName = args[0];
-//		String registryHost = args[1];
-//		int registryPort = Integer.parseInt(args[2]);
-//		String serviceName = args[3];
 
 		// it should have its own port. assume you hardwire it.
 		host = (InetAddress.getLocalHost()).getHostName();
 		port = 15641;
-
-		// it now have two classes from MainClassName:
-		// (1) the class itself (say ZipCpdeServerImpl) and
-		// (2) its skeleton.
-//		Class initialclass = Class.forName(InitialClassName);
-//		Class initialskeleton = Class.forName(InitialClassName + "_skel");
-
-		// you should also create a remote object table here.
-		// it is a table of a ROR and a skeleton.
-		// as a hint, I give such a table's interface as RORtbl.java.
-//		RORtbl tbl = new RORtbl();
-
-		// after that, you create one remote object of initialclass.
-//		Object o = initialclass.newInstance();
-
-		// then register it into the table.
-//		tbl.addObj(host, port, o);
-
-		
 		/*
 		 *ror table  for testing 
 		 *Two hash tables:
@@ -83,10 +64,12 @@ public class yourRMI {
 		tableROR.put("ZipCodeServer", list);
 		//table2
 		Hashtable <Integer,Object> tableRO = new Hashtable<Integer, Object>();
-		ZipCodeServerImpl impl = new ZipCodeServerImpl();
-		tableRO.put(1, impl);
-		tableRO.put(2, impl);
-		tableRO.put(3, impl);
+		ZipCodeServerImpl impl1 = new ZipCodeServerImpl();
+		ZipCodeServerImpl impl2 = new ZipCodeServerImpl();
+		ZipCodeServerImpl impl3 = new ZipCodeServerImpl();
+		tableRO.put(1, impl1);
+		tableRO.put(2, impl2);
+		tableRO.put(3, impl3);
 		// create a socket.
 		ServerSocket serverSoc = new ServerSocket(port);
 		
@@ -120,23 +103,48 @@ public class yourRMI {
 			System.out.println(receiveMessage.getRor().getRemote_Interface_Name()+"Impl");
 			Object ro = tableRO.get(receiveMessage.getRor().getObj_Key());
 			
-			// (5) Either:
-			// -- using the interface name, asks the skeleton,
-			// together with the object reference, to unmartial
-			// and invoke the real object.
-			// -- or do unmarshalling directly and involkes that
-			// object directly.
-			Method method = ro.getClass().getMethod(receiveMessage.getMethodName(), receiveMessage.getArgs().getClass());
 			
-			// (6) receives the return value, which (if not marshalled
-			// you should marshal it here) and send it out to the
-			// the source of the invoker.
-			Object returnValue = method.invoke(ro, receiveMessage.getArgs());
-			// (6.1) send reply message to stub
-			RMIMessage replyMessage = new RMIMessage();
-			replyMessage.setType("return");
-			replyMessage.setReturnValue(returnValue);
-			out.writeObject(replyMessage);
+			
+			
+			
+			try {
+				// (5) Either:
+				// -- using the interface name, asks the skeleton,
+				// together with the object reference, to unmartial
+				// and invoke the real object.
+				// -- or do unmarshalling directly and involkes that
+				// object directly.
+				Method method;
+				Object returnValue;
+				if(receiveMessage.getArgs().equals("")){
+					 method = ro.getClass().getMethod(receiveMessage.getMethodName());
+					// (6) receives the return value, which (if not marshalled
+					// you should marshal it here) and send it out to the
+					// the source of the invoker.
+					 returnValue = method.invoke(ro);
+				}else {
+					 method = ro.getClass().getMethod(receiveMessage.getMethodName(), receiveMessage.getArgs().getClass());
+					// (6) receives the return value, which (if not marshalled
+					// you should marshal it here) and send it out to the
+					// the source of the invoker.
+					 returnValue = method.invoke(ro, receiveMessage.getArgs());
+				}
+				
+				
+				// (6.1) send reply message to stub
+				RMIMessage replyMessage = new RMIMessage();
+				replyMessage.setType("return");
+				replyMessage.setReturnValue(returnValue);
+				out.writeObject(replyMessage);
+			} catch (Exception e) {
+				System.out.println("exception catched in yourRMI");
+				RMIMessage replyMessage = new RMIMessage();
+				replyMessage.setType("exception");
+				replyMessage.setE(e);;
+				out.writeObject(replyMessage);
+			}
+			
+			
 			// (7) closes the socket.
 			socket.close();
 		}

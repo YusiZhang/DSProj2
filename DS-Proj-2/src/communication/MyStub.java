@@ -1,3 +1,7 @@
+/*
+ * author : Yusi
+ * based on sample code from 15640
+ */
 package communication;
 
 import registry.RemoteObjectRef;
