@@ -132,7 +132,11 @@ public class ZipCodeServer_Stub extends MyStub implements ZipCodeServer {
 			// send message to yourRMI
 			RMIMessage sendMessage = new RMIMessage();
 			sendMessage.setType("invoke");
+			
+			//intentionally set wrong args to test exception handle funciton.
 			sendMessage.setArgs("testArg");
+			//
+			
 			sendMessage.setMethodName("findAll");
 			sendMessage.setRor(this.getRor());
 			out.writeObject(sendMessage);
